@@ -109,8 +109,8 @@ void PrintPZController::service(HttpRequest& request, HttpResponse& response)
             ret = RetJson::fail().setMsg("没有加载到凭证pdf文件");
         }
         //写响应数据
-        response.setHeader("Access-Control-Allow-Credentials", "true");
         response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Headers", "DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization");
         response.setHeader("Content-Type", "application/json; charset=UTF-8");
         QJsonDocument jsonDoc(ret);
         QByteArray body = jsonDoc.toJson();
