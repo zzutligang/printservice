@@ -80,6 +80,8 @@ void PrinterSetupController::service(HttpRequest& request, HttpResponse& respons
     }
 
     //写响应数据
+    response.setHeader("Access-Control-Allow-Credentials", "true");
+    response.setHeader("Access-Control-Allow-Origin", "*");
     response.setHeader("Content-Type", "application/json; charset=UTF-8");
     QJsonDocument jsonDoc(ret);
     QByteArray body = jsonDoc.toJson();
