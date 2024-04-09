@@ -32,20 +32,30 @@ PrintPZController::PrintPZController()
 
 void PrintPZController::service(HttpRequest& request, HttpResponse& response)
 {
+    if(request.getMethod()=="OPTIONS"){
+        response.setStatus(200,"OK");
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Headers", "DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization");
+        response.setHeader("Access-Control-Allow-Methods", "*");
+        return;
+    }
+
     QByteArray auth = request.getHeader("Authorization");
     if (auth.isNull())
     {
         qCritical("User is not logged in");
         response.setStatus(401,"Unauthorized");
+        //response.setHeader("Access-Control-Allow-Origin", "*");
+        //response.setHeader("Access-Control-Allow-Headers", "DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization");
+        //response.setHeader("Content-Type", "application/json; charset=UTF-8");
         //response.setHeader("WWW-Authenticate","Basic realm=Please login with any name and password");
     }
     else
     {
         qDebug("Authorization: %s",qPrintable(auth));
-
+        RetJson ret = RetJson::ok();
         QByteArray url = request.getParameter("URL");
         QByteArray data = requestPZData(url, auth);
-        RetJson ret = RetJson::ok();
         if(!data.isNull() && !data.isEmpty()){ //如果加载到数据，就解析pdf
             qDebug() << "数据长度：" << data.length();
             QPdfDocument pdf;
@@ -115,7 +125,7 @@ void PrintPZController::service(HttpRequest& request, HttpResponse& response)
         QJsonDocument jsonDoc(ret);
         QByteArray body = jsonDoc.toJson();
         response.write(body,true);
-    }
+    } //if (auth.isNull())
 }
 
 QByteArray PrintPZController::requestPZData(QByteArray url, QByteArray authorization)
