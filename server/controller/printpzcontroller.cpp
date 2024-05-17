@@ -62,7 +62,6 @@ void PrintPZController::service(HttpRequest& request, HttpResponse& response)
             QBuffer buffer(&data);
             buffer.open(QIODevice::ReadOnly);
             pdf.load(&buffer);
-            buffer.close();
             qDebug() << "加载进QPdfDocument完毕";
             int pageCount = pdf.pageCount();
             qDebug() << "pdf文件总页数：" << pageCount;
@@ -114,6 +113,8 @@ void PrintPZController::service(HttpRequest& request, HttpResponse& response)
                 qDebug() << "无法打开打印机:" << defaultPrinter;
                 ret = RetJson::fail().setMsg("无法打开打印机");
             }
+            //最后关闭数据流
+            buffer.close();
         }else{
             qDebug() << "没有加载到凭证pdf文件";
             ret = RetJson::fail().setMsg("没有加载到凭证pdf文件");
